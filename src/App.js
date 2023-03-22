@@ -1,24 +1,31 @@
-import logo from './logo.svg';
+
 import './App.css';
+import React, { Component, Fragment } from 'react';
+
+import ToDoList from './components/ToDoList/ToDoList';
+import { BrowserRouter } from 'react-router-dom';
+import CreateTaskForm from './components/CreateTaskForms/CreateTaskForm'
+
 
 function App() {
+
+  // const Get = () => {
+  //   const dbRef = ref(database, 'tasks');
+
+  //   onValue(dbRef, (snapshot) => {
+  //     snapshot.forEach((childSnapshot) => {
+  //       const key = childSnapshot.key;
+  //       const data = childSnapshot.val();
+  //       console.log("key: ", key);
+  //       console.log("data:", data);
+  //     });
+  //   }, {
+  //     onlyOnce: true
+  //   });
+  // }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ToDoList />
   );
 }
 

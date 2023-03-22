@@ -1,0 +1,81 @@
+a:active,
+/* активная/посещенная ссылка */
+a:hover,
+/* при наведении */
+a {
+    text-decoration: none;
+    color: #000000;
+}
+
+.task_block {
+    margin: 20px 0px 0px 10px
+}
+
+.task_block_title {
+    font-size: 35px;
+}
+
+.task_list {
+    font-size: 25px;
+    padding-bottom: 40px;
+}
+
+.task_item {
+    margin-bottom: 15px;
+}
+
+.task_item input {
+    display: none;
+}
+
+.task_checkbox {
+    display: inline-block;
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    border: 3px solid rgb(241, 128, 7);
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    position: relative;
+}
+
+.task_checkbox::before {
+    content: "\2713";
+    position: absolute;
+    font-size: 20px;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.task_item input:checked,
+.task_checkbox::before {
+    opacity: 1;
+}
+
+.task_item input:checked+.task_checkbox {
+    background-color: rgb(241, 128, 7);
+}
+
+.add_task_button {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    background-color: #f07f05;
+    font-size: 25px;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
