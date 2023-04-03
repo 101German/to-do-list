@@ -3,15 +3,14 @@ import { useParams } from "react-router-dom";
 import "./CreateTaskForms.css";
 import database from "../../config";
 import { doc, getDoc } from "firebase/firestore";
-import { Link } from "react-router-dom";
+import InputField, { Input } from "../Shared/Input";
+import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
 
 function CreateTaskForm(props) {
   const [name, setNameTask] = useState("");
   const [desc, setDescTask] = useState("");
   const [date, setDateTask] = useState(new Date());
-  const [formTitle, setFormTitle] = useState("");
-  const [formSubmit, setFormSubmit] = useState();
-  const [formButtonTitle, setFormButtonTitle] = useState("");
+  let navigate = useNavigate();
 
   const params = useParams();
   useEffect(() => {
@@ -20,16 +19,14 @@ function CreateTaskForm(props) {
         const taskRef = doc(database, "tasks", params.id);
         const task = (await getDoc(taskRef)).data();
         console.log("task in form ", task);
-        setFormTitle("Edit task");
-        setFormButtonTitle("Edit");
         setNameTask(task.name);
         setDescTask(task.desc);
+        console.log("task date ", task.date);
         setDateTask(task.date);
-        //setFormSubmit(props.updateTask);
-      } else {
-        //setFormSubmit(props.addTask);
-        setFormTitle("Create new task");
-        setFormButtonTitle("Create");
+      } else if (props.selectDate) {
+        const date = new Date(props.selectDate);
+        date.setHours(3);
+        setDateTask(date.toISOString().slice(0, 10));
       }
     };
     getTaskForUpdate();
@@ -48,10 +45,15 @@ function CreateTaskForm(props) {
   };
   const submitForm = () => {
     event.preventDefault();
-    if (params.id != undefined) {
-      props.updateTask({ name, desc, date }, params.id);
+    if (name === "" || desc === "" || date === "") {
+      alert("Validation error, pass empty value");
     } else {
-      props.addTask({ name, desc, date });
+      if (params.id != undefined) {
+        props.updateTask({ name, desc, date }, params.id);
+      } else {
+        props.addTask({ name, desc, date });
+      }
+      navigate("/");
     }
   };
   return (
@@ -60,15 +62,17 @@ function CreateTaskForm(props) {
         <p className="form_header">&#60; Tasks</p>
       </Link>
       <form className="task_form">
-        <p className="form_title">{formTitle}</p>
+        <p className="form_title">
+          {params.id != undefined ? "Update task" : "Create task"}
+        </p>
         <div className="form_group">
           <span>Name</span>
-          <input
-            type="text"
-            placeholder="..."
-            className="name_input"
+          <InputField
+            typeInput="text"
+            styleName="name_input"
             value={name}
-            onChange={handleChangeName}
+            placeholder="..."
+            handleChangeValue={handleChangeName}
           />
         </div>
         <div className="form_group">
@@ -82,16 +86,16 @@ function CreateTaskForm(props) {
         </div>
         <div className="form_group">
           <span>Date</span>
-          <input
-            type="date"
-            name="calendar"
-            className="date_input"
+          <InputField
+            typeInput="date"
+            styleName="date_input"
             value={date}
-            onChange={handleChangeDate}
+            placeholder="..."
+            handleChangeValue={handleChangeDate}
           />
         </div>
         <button className="submit_button" onClick={submitForm}>
-          {formButtonTitle}
+          {params.id != undefined ? "Update" : "Create"}
         </button>
       </form>
     </div>

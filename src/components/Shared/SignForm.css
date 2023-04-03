@@ -1,4 +1,4 @@
-.form-signIn {
+.sign-form {
     width: 320px;
     height: 200px;
     margin: 0 auto;
@@ -25,6 +25,7 @@
 
 .form-group {
     position: relative;
+    margin-bottom: 20px;
 }
 
 .form-label {
