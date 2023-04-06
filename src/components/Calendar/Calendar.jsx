@@ -59,9 +59,9 @@ function Calendar(props) {
     ) {
       classCalendarItem += " active";
     }
-    let currentTasks = props.taskList.filter((item) => {
-      let itemDay = new Date(item.date);
-      let currentDay = new Date(getFullYear(), getMonth(), i);
+    const currentTasks = props.taskList.filter((item) => {
+      const itemDay = new Date(item.date);
+      const currentDay = new Date(getFullYear(), getMonth(), i);
       return (
         currentDay.getTime() ===
         new Date(
@@ -71,10 +71,10 @@ function Calendar(props) {
         ).getTime()
       );
     });
-    let hasDoneTask = currentTasks.some((task) => {
+    const hasDoneTask = currentTasks.some((task) => {
       return task.done === true;
     });
-    let hasNotDoneTask = currentTasks.some((task) => {
+    const hasNotDoneTask = currentTasks.some((task) => {
       return task.done === false;
     });
 

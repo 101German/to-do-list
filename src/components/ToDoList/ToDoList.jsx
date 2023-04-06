@@ -44,10 +44,9 @@ function ToDoList() {
     let taskList = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
     return taskList;
   };
-  useLayoutEffect(() => {
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("USER in to do ", user);
         setCurrentUser(user);
         getTasks().then((res) => {
           const tasksForUser = res.filter((task) => {
@@ -78,38 +77,40 @@ function ToDoList() {
           }
         });
       } else {
-        console.log("navigate");
         navigate("/sign-in");
       }
     });
   }, []);
 
   const changeDone = (taskId) => {
-    console.log("here");
     const newTasks = JSON.parse(JSON.stringify(tasks));
+    const newTasksForList = JSON.parse(JSON.stringify(tasksForList));
     newTasks.forEach((task) => {
       if (task.id === taskId) {
-        console.log("task id", taskId);
         const taskDoc = doc(database, "tasks", taskId);
         updateDoc(taskDoc, { done: !task.done });
         task.done = !task.done;
-        console.log("task done ", task.done);
         return;
       }
     });
-    console.log("tasks ", newTasks);
+
+    newTasksForList.forEach((task) => {
+      if (task.id === taskId) {
+        const taskDoc = doc(database, "tasks", taskId);
+        updateDoc(taskDoc, { done: !task.done });
+        task.done = !task.done;
+        return;
+      }
+    });
+    setTasksForList(newTasksForList);
     setTasks(newTasks);
-    selectDay(selectDate);
   };
 
   const selectDay = (date) => {
     setSelectDate(date);
-    console.log("date: ", date);
-
     const listTasks = [];
 
     getTasks().then((res) => {
-      console.log("res ", res);
       res.forEach((task) => {
         const taskDate = new Date(task.date);
         if (
@@ -120,20 +121,17 @@ function ToDoList() {
           ).getTime() === date.getTime() &&
           task.userId === currentUser.uid
         ) {
-          console.log("task for day ", task);
           listTasks.push(task);
         }
       });
       setTasksForList(listTasks);
     });
-    console.log("tasks for list ", listTasks);
   };
 
   const addTask = (task) => {
     const newTask = { ...task, done: false, userId: currentUser.uid };
 
     addDoc(taskCollectionRef, newTask).then(() => {
-      console.log("getTasks");
       getTasks().then((res) => {
         const tasksForUser = res.filter((task) => {
           return task.userId === currentUser.uid;
@@ -158,8 +156,6 @@ function ToDoList() {
         selectDay(selectDate);
       });
     });
-
-    console.log(selectDate);
   };
 
   return (
@@ -186,9 +182,20 @@ function ToDoList() {
         />
         <Route
           path="/create-task-form"
-          element={<CreateTaskForm updateTask={updateTask} addTask={addTask} />}
+          element={
+            <CreateTaskForm
+              updateTask={updateTask}
+              addTask={addTask}
+              selectDate={selectDate}
+            />
+          }
         >
-          <Route index element={<CreateTaskForm addTask={addTask} />} />
+          <Route
+            index
+            element={
+              <CreateTaskForm addTask={addTask} selectDate={selectDate} />
+            }
+          />
           <Route
             path=":id"
             element={<CreateTaskForm updateTask={updateTask} />}
